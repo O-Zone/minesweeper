@@ -1,0 +1,51 @@
+@import 'variables.less';
+
+* {
+	box-sizing: border-box;
+}
+div{
+	margin:0;
+	padding:0;
+}
+body{
+	background-color: @color-background;
+	color: @color-foreground;
+	font-family: verdana,helvetica,arial,san-serif;
+	font-size: 12px;
+
+	h1{
+		font-size: 18px;
+	}
+	.battlefield{
+		.mrow{
+			padding:0;
+			margin:0;
+			height:@cell-height;
+			.mcell{
+				float:left;
+				text-align:center;
+				height: @cell-height;
+				width: @cell-width;
+				color: @color-black;
+				background-color: @color-cell;
+				border-top: @cell-border-width solid @color-cell-lighter;
+				border-left: @cell-border-width solid @color-cell-lighter;
+				border-bottom: @cell-border-width solid @color-cell-darker;
+				border-right: @cell-border-width solid @color-cell-darker;
+				cursor: pointer;
+				padding:0;
+				margin:0;
+				line-height:26px;
+				&.turned{
+					border-top: 1px solid @color-cell-darker;
+					border-left: 1px solid @color-cell-darker;
+					border-bottom: 1px solid @color-cell-lighter;
+					border-right: 2px solid @color-cell-lighter;
+				}
+				&.flagged{
+					background-color: @color-cell-darkred;
+				}
+			}
+		}
+	}
+}
