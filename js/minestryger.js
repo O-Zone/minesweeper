@@ -48,7 +48,7 @@ Playfield.prototype = {
 			return Math.random() - 0.5;
 		});
 		for (var i=0; i < bombCount; i += 1) {
-			var nextBombIndex = tmpAllIndexes.shift()
+			var nextBombIndex = tmpAllIndexes.shift(),
 				rowIndex = parseInt(Math.floor(nextBombIndex / this.width), 10),
 				columnIndex = nextBombIndex % this.width;
 			this.rows[rowIndex][columnIndex].hasBomb = true;
@@ -96,7 +96,8 @@ Playfield.prototype = {
 		this.turnIfZero(row+1,column+1);
 	},
 	onclick : function (e) {
-		if ($(e.target).hasClass('mcell')) {
+		var $target = $(e.target);
+		if ($target.hasClass('mcell') && !$target.hasClass('flagged')) {
 			var clickedId = $(e.target).attr('id'),
 				coords = clickedId.substr(1).split('_'),
 				row = parseInt(coords[0], 10),
@@ -107,33 +108,37 @@ Playfield.prototype = {
 			}
 			$(e.target)
 				.addClass('turned')
-				.html(thisCell.hasBomb ? '*' : thisCell.count);
+				.html(thisCell.hasBomb ? '<span class="fa fa-bomb red"></span>' : thisCell.count);
 			thisCell.isTurned = true;
 			if (thisCell.hasBomb) {
-				alert('Bang, you are dead!');
+				$(e.target).closest('.mcell').css({'background-color': '#faa'});
 			} else {
 				if (thisCell.count === 0) {
 					this.goClearZeroes(row, column);
 				}
 			}
 		}
-		else console('lort');
 	},
 	onrightclick: function (e) {
-		e.preventDefault();
-		if ($(e.target).hasClass('mcell')) {
-			var clickedId = $(e.target).attr('id'),
+		$target = $(e.target).closest('.mcell');
+		if ($target.length > 0) {
+			e.preventDefault();
+			var clickedId = $target.attr('id'),
 				coords = clickedId.substr(1).split('_'),
 				row = parseInt(coords[0], 10),
 				column = parseInt(coords[1], 10),
 				thisCell = this.rows[row][column];
 			thisCell.isFlagged = !thisCell.isFlagged;
-			if (thisCell.isFlagged) {
-				$(e.target)
-					.addClass('flagged');
-			} else {
-				$(e.target)
-					.removeClass('flagged');
+			if (!thisCell.isTurned) {
+				if (thisCell.isFlagged) {
+					$target
+						.addClass('flagged')
+						.html('<span class="fa fa-exclamation-circle"></span>');
+				} else {
+					$target
+						.removeClass('flagged')
+						.html('');
+				}
 			}
 		}
 		return false;
